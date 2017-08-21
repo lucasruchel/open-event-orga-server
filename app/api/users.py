@@ -134,6 +134,19 @@ class UserSelfEvents(Resource):
         events = DataGetter.get_user_events(user_id=user.id).filter(UsersEventsRoles.role_id != attendee_role.id).all()
         return events, 200
 
+@api.route('/users/me/tickets')
+@api.response(404, 'User not found')
+class UserSelfTickets(Resource):
+    @requires_auth
+    @can_access_account
+    @api.doc('get_self_tickets')
+    @api.marshal_list_with(EVENT)
+    def get(self):
+        """Fetch the current authenticated user's events"""
+        user = getattr(g, 'user', None)
+        attendee_role = Role.query.filter_by(name=ATTENDEE).first()
+        events = DataGetter.get_user_events(user_id=user.id).filter(UsersEventsRoles.role_id != attendee_role.id).all()
+        return events, 200
 
 @api.route('/users')
 class UserList(Resource):
