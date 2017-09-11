@@ -1,16 +1,16 @@
 from datetime import datetime
 
 import requests
-from geoip import geolite2
+from tzlocal import get_localzone
 from requests import ConnectionError
 
 from app.helpers.flask_ext.helpers import get_real_ip
 
 
 def get_current_timezone():
-    match = geolite2.lookup(get_real_ip(True) or '127.0.0.1')
+    match = str(get_localzone())
     if match is not None:
-        return match.timezone
+        return match
     else:
         return 'UTC'
 
